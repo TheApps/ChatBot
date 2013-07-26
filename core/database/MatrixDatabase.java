@@ -17,7 +17,7 @@ public class MatrixDatabase
 	private List<String> matrixDatabase;
 	private List<Emotion> matrixDatabaseEmotions;
 	
-	private File file = new File("databases/matrixdatabase.txt");
+	private File file = new File(Run.DATABASE_DORECTORY + "/matrixdatabase.txt");
 	
 	public MatrixDatabase()
 	{

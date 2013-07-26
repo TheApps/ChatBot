@@ -17,7 +17,7 @@ public class SpecialDatabase
 	private List<String> specialDatabase;
 	private List<Emotion> specialDatabaseEmotions;
 	
-	private File file = new File("databases/specialdatabase.txt");
+	private File file = new File(Run.DATABASE_DORECTORY + "/specialdatabase.txt");
 	
 	public SpecialDatabase()
 	{
