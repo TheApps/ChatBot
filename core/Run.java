@@ -20,13 +20,13 @@ public class Run
 	public static Scanner scan;
 	private static int toggle = 0;
 	public static final String ROOT_DIRECTORY = "src/core";
-	public static final String DATABASE_DORECTORY = ROOT_DIRECTORY + "/database";
+	public static final String DATABASE_DIRECTORY = ROOT_DIRECTORY + "/database";
 	
 	public static void main(String[] args)
 	{
 		scan = new Scanner(System.in);
 		sp = new StringProcessor();
-		File file = new File(DATABASE_DORECTORY);
+		File file = new File(DATABASE_DIRECTORY);
 		File file2 = new File("log_" + (Calendar.getInstance().get(Calendar.MONTH) + 1) + "_" + Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "_" + Calendar.getInstance().get(Calendar.YEAR) + "_" + Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + "_" + Calendar.getInstance().get(Calendar.MINUTE) + "_" + Calendar.getInstance().get(Calendar.SECOND) + ".txt");
 		if(!file.exists())
 		{
