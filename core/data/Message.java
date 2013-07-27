@@ -22,6 +22,11 @@ public class Message
 		this.emotions = emotions;
 	}
 	
+	public Message(EmotionalString message)
+	{
+		this(message.getMessage(), message.getEmotion());
+	}
+	
 	public String getMessage()
 	{
 		return message;

@@ -8,7 +8,7 @@ public class StringProcessor
 {
 	public String processString(String input)
 	{
-		if(input.equals("END_CODE:YUKI"))
+		if(input.equals("END:"))
 		{
 			Run.sd.saveSpecialDatabase();
 			Run.end = true;

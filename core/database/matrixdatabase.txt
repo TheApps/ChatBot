@@ -1,4 +1,4 @@
-32
+34
 hello:GREETING
 hi:GREETING
 hey:GREETING
@@ -31,3 +31,5 @@ yay:HAPPY
 congrat:HAPPY
 congrad:HAPPY
 like:HAPPY
+thanks:THANKFUL
+suck:SAD

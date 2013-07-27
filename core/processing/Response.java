@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import core.data.Emotion;
+import core.data.EmotionalString;
 import core.data.Message;
 
 public class Response
@@ -19,111 +20,221 @@ public class Response
 	public Message getResponse()
 	{
 		Random rand = new Random();
-		List<String> responses = getResponses(message.getEmotions(), rand);
-		Message response = new Message(responses.get(rand.nextInt(responses.size())), Emotion.NONE);
+		List[] response = getResponses(message.getEmotions(), rand, message.getMessage());
+		List<String> responseStrings = response[0];
+		List<Emotion> responseEmotions = response[1];
+		Message finalResponse = getOrganizedResponse(responseStrings, responseEmotions, rand);
 		
 		
 		
-		return response;
+		return finalResponse;
 	}
 	
-	private List<String> getResponses(List<Emotion> emotions, Random rand)
+	private List[] getResponses(List<Emotion> emotions, Random rand, String message)
 	{
 		List<String> responses = new ArrayList<String>();
+		List<Emotion> responseEmote = new ArrayList<Emotion>();
 		for(Emotion emotion: emotions)
 		{
-			responses.add(getResponse(emotion, rand));
+			EmotionalString response = getResponse(emotion, rand, message);
+			responses.add(response.getMessage());
+			responseEmote.add(response.getEmotion());
 		}
-		return responses;
+		List[] responseArray = {responses, responseEmote};
+		return responseArray;
 	}
 	
-	private String getResponse(Emotion emotion, Random rand)
+	private EmotionalString getResponse(Emotion emotion, Random rand, String message)
 	{
-		String response = "";
+		String responseMessage = "";
+		Emotion responseEmotion = Emotion.NONE;
 		switch(emotion)
 		{
-		case ANGRY:
-			response = "NEED MORE THAN EMOTION";
-			break;
 		case FAREWELL:
 			switch(rand.nextInt(6))
 			{
 			case 0:
-				response = "Bye.";
+				responseMessage = "Bye.";
+				responseEmotion = Emotion.FAREWELL;
 				break;
 			case 1:
-				response = "Goodbye.";
+				responseMessage = "Goodbye.";
+				responseEmotion = Emotion.FAREWELL;
 				break;
 			case 2:
-				response = "Farewell.";
+				responseMessage = "Farewell.";
+				responseEmotion = Emotion.FAREWELL;
 				break;
 			case 3:
-				response = "See you later.";
+				responseMessage = "See you later.";
+				responseEmotion = Emotion.FAREWELL;
 				break;
 			case 4:
-				response = "Why do you have to go?";
+				responseMessage = "Why do you have to go?";
+				responseEmotion = Emotion.QUESTION;
 				break;
 			case 5:
-				response = "I'll miss you!";
+				responseMessage = "I'll miss you!";
+				responseEmotion = Emotion.FAREWELL;
 				break;
 			}
 			break;
 		case GREETING:
-			switch(rand.nextInt(6))
+			switch(rand.nextInt(3))
 			{
 			case 0:
-				response = "Hi.";
+				responseMessage = "Hi.";
+				responseEmotion = Emotion.GREETING;
 				break;
 			case 1:
-				response = "Hello.";
+				responseMessage = "Hello.";
+				responseEmotion = Emotion.GREETING;
 				break;
 			case 2:
-				response = "Hey!";
-				break;
-			case 3:
-				response = "Hi, how are you?";
-				break;
-			case 4:
-				response = "What's up?";
-				break;
-			case 5:
-				response = "How's it going?";
-				break;
-			}
-			break;
-		case HAPPY:
-			switch(rand.nextInt(4))
-			{
-			case 0:
-				response = "Yay!";
-				break;
-			case 1:
-				response = "That's great!";
-				break;
-			case 2:
-				response = "I'm so happy for you.";
-				break;
-			case 3:
-				response = "Same.";
+				responseMessage = "Hey!";
+				responseEmotion = Emotion.GREETING;
 				break;
 			}
 			break;
 		case NONE:
-			response = "ok.";
-			break;
-		case QUESTION:
-			response = "NEED MORE THAN EMOTION";
-			break;
-		case SAD:
-			response = "NEED MORE THAN EMOTION";
+			switch(rand.nextInt(2))
+			{
+			case 0:
+				responseMessage = "ok.";
+				responseEmotion = Emotion.NONE;
+				break;
+			case 1:
+				responseMessage = "cool.";
+				responseEmotion = Emotion.NONE;
+				break;
+			}
 			break;
 		case UNKNOWN:
-			response = "That doesn't make sense.";
+			responseMessage = "That doesn't make sense.";
+			responseEmotion = Emotion.CONFUSED;
 			break;
 		default:
-			response = emotion.toString();
+			EmotionalString protoResponse = getAdditionalResponseData(emotion, rand, message);
+			responseMessage = protoResponse.getMessage();
+			responseEmotion = protoResponse.getEmotion();
 			break;
 		}
-		return response;
+		return new EmotionalString(responseMessage, responseEmotion);
+	}
+	
+	private EmotionalString getAdditionalResponseData(Emotion emotion, Random rand, String message)
+	{
+		String responseString = message;
+		Emotion responseEmotion = emotion;
+		if(message.contains("how") && (message.contains("you") || message.contains("going")))
+		{
+			responseString = "I'm doing ";
+			switch(rand.nextInt(5))
+			{
+			case 0:
+				responseString += "great.";
+				responseEmotion = Emotion.HAPPY;
+				break;
+			case 1:
+				responseString += "good.";
+				responseEmotion = Emotion.HAPPY;
+				break;
+			case 2:
+				responseString += "ok.";
+				responseEmotion = Emotion.NONE;
+				break;
+			case 3:
+				responseString = "I'm not doing too well.";
+				responseEmotion = Emotion.SAD;
+				break;
+			case 4:
+				responseString = "Horrible.";
+				responseEmotion = Emotion.SAD;
+				break;
+			}
+		}
+		else if(emotion.equals(Emotion.THANKFUL))
+		{
+			switch(rand.nextInt(3))
+			{
+			case 0:
+				responseString = "No problem.";
+				responseEmotion = Emotion.HAPPY;
+				break;
+			case 1:
+				responseString = "You're welcome.";
+				responseEmotion = Emotion.HAPPY;
+				break;
+			case 2:
+				responseString = "Any time.";
+				responseEmotion = Emotion.HAPPY;
+				break;
+			}
+		}
+		else if(emotion.equals(Emotion.HAPPY))
+		{
+			responseString = RandomThings.askRandomQuestion(rand);
+			responseEmotion = Emotion.QUESTION;
+		}
+		else if(emotion.equals(Emotion.SAD))
+		{
+			responseString = "yep...";
+			responseEmotion = Emotion.NONE;
+		}
+		
+		
+		
+		
+		return new EmotionalString(responseString, responseEmotion);
+	}
+	
+	private Message getOrganizedResponse(List<String> responses, List<Emotion> emotions, Random rand)
+	{
+		Message message = new Message("not done yet", Emotion.NONE);
+		for(int i = 0; i < emotions.size(); i++)
+		{
+			if(emotions.get(i).equals(Emotion.GREETING))
+			{
+				message = new Message(responses.get(i), Emotion.GREETING);
+				for(int j = 0; j < emotions.size(); j++)
+				{
+					if(emotions.get(j).equals(Emotion.HAPPY) || emotions.get(j).equals(Emotion.NONE))
+					{
+						String response = responses.get(i).replace(".", ",").replace("!", ",").replace("?", ",");
+						char[] responseCharArray = responses.get(j).toCharArray();
+						responseCharArray[0] = Character.toLowerCase(responseCharArray[0]);
+						String response2 = String.valueOf(responseCharArray);
+						message = new Message(response + " " + response2, emotions.get(j));
+						if(rand.nextBoolean())
+						{
+							switch(rand.nextInt(2))
+							{
+							case 0:
+								message = new Message(message.getMessage() + " How about you?", Emotion.QUESTION);
+								break;
+							case 1:
+								message = new Message(message.getMessage() + " You?", Emotion.QUESTION);
+								break;
+							}
+						}
+					}
+					else if(emotions.get(j).equals(Emotion.SAD))
+					{
+
+						message = new Message(responses.get(j), emotions.get(j));
+					}
+				}
+			}
+			else
+			{
+				message = new Message(responses.get(i), emotions.get(i));
+			}
+		}
+		
+		
+		
+		
+		
+		return message;
 	}
 }
