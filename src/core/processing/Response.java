@@ -17,6 +17,7 @@ public class Response
 		this.message = message;
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Message getResponse()
 	{
 		Random rand = new Random();
@@ -30,6 +31,7 @@ public class Response
 		return finalResponse;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	private List[] getResponses(List<Emotion> emotions, Random rand, String message)
 	{
 		List<String> responses = new ArrayList<String>();
@@ -80,7 +82,7 @@ public class Response
 			}
 			break;
 		case GREETING:
-			switch(rand.nextInt(3))
+			switch(rand.nextInt(5))
 			{
 			case 0:
 				responseMessage = "Hi.";
@@ -93,6 +95,14 @@ public class Response
 			case 2:
 				responseMessage = "Hey!";
 				responseEmotion = Emotion.GREETING;
+				break;
+			case 3:
+				responseMessage = "Hi, how's it going?";
+				responseEmotion = Emotion.QUESTION;
+				break;
+			case 4:
+				responseMessage = "Hey, how's it going?";
+				responseEmotion = Emotion.QUESTION;
 				break;
 			}
 			break;
@@ -126,7 +136,7 @@ public class Response
 	{
 		String responseString = message;
 		Emotion responseEmotion = emotion;
-		if(message.contains("how") && (message.contains("you") || message.contains("going")))
+		if((message.contains("how") && (message.contains("you") || message.contains("going"))) || message.contains("hbu"))
 		{
 			responseString = "I'm doing ";
 			switch(rand.nextInt(5))
