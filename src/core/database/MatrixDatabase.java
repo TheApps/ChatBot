@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,9 +18,16 @@ public class MatrixDatabase
 	private List<String> matrixDatabase;
 	private List<Emotion> matrixDatabaseEmotions;
 	
-	private File file = new File(Run.DATABASE_DIRECTORY + "/matrixdatabase.txt");
+	private File file = new File(Run.instance.DATABASE_DIRECTORY + "/matrixdatabase.txt");
 	
 	public MatrixDatabase()
+	{
+		init();
+		load();
+		checkForInvalid();
+	}
+	
+	public void init()
 	{
 		if(!file.exists())
 		{
@@ -37,8 +45,11 @@ public class MatrixDatabase
 				e.printStackTrace();
 			}
 		}
-		load();
-		if(Run.debug)
+	}
+	
+	public void checkForInvalid()
+	{
+		if(Run.instance.debug)
 		{
 			for(int i = 0; i < matrixDatabaseEmotions.size(); i++)
 			{
@@ -46,7 +57,7 @@ public class MatrixDatabase
 				{
 					System.err.println("database entry found with an unknown emotion. delete, replace, ignore");
 					System.err.println(matrixDatabase.get(i));
-					String response = Run.scan.nextLine();
+					String response = Run.instance.scan.nextLine();
 					if(response.equals("delete"))
 					{
 						matrixDatabase.remove(i);
@@ -56,7 +67,7 @@ public class MatrixDatabase
 					else if(response.equals("replace"))
 					{
 						System.err.println("what do you want to replace it with?");
-						response = Run.scan.nextLine();
+						response = Run.instance.scan.nextLine();
 						for(Emotion emote : Emotion.values())
 						{
 							if(response.toUpperCase().equals(emote.toString()))
@@ -75,7 +86,11 @@ public class MatrixDatabase
 	{
 		try
 		{
-			BufferedReader br = new BufferedReader(new FileReader(file));
+			BufferedReader br;
+			if(Run.instance.connectedToInternet)
+				br = new BufferedReader(new InputStreamReader(Run.instance.matrixDatabase));
+			else
+				br = new BufferedReader(new FileReader(file));
 			int size = 0;
 			try
 			{
@@ -93,6 +108,8 @@ public class MatrixDatabase
 				add(line);
 			}
 			br.close();
+			if(Run.instance.connectedToInternet)
+				saveMatrixDatabase();
 		}
 		catch(Exception e)
 		{

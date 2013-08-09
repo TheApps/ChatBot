@@ -10,27 +10,27 @@ public class StringProcessor
 	{
 		if(input.equals("END:"))
 		{
-			Run.sd.saveSpecialDatabase();
-			Run.end = true;
+			Run.instance.sd.saveSpecialDatabase();
+			Run.instance.end = true;
 			return "ending";
 		}
 		else if(input.contains("ADD:"))
 		{
-			Run.sd.add(input.substring(4));
-			Run.sd.saveSpecialDatabase();
+			Run.instance.sd.add(input.substring(4));
+			Run.instance.sd.saveSpecialDatabase();
 			return "successfully added word to dictionary";
 		}
 		else if(input.equals("RELOAD:"))
 		{
-			Run.sd.load();
-			Run.md.load();
+			Run.instance.sd.load();
+			Run.instance.md.load();
 			return "reload complete";
 		}
 		input = input.replace(",", "").replace(".", "").replace("!", "").replace("'", "").toLowerCase();
-		Message message = Run.sd.getFromSpecialDatabase(input);
+		Message message = Run.instance.sd.getFromSpecialDatabase(input);
 		if(message.getEmotions().size() == 0)
 		{
-			message = Run.md.getFromMatrixDatabase(input);
+			message = Run.instance.md.getFromMatrixDatabase(input);
 			if(message.getEmotions().size() == 0)
 			{
 				message = new Message(message.getMessage(), Emotion.UNKNOWN);

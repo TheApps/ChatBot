@@ -17,13 +17,17 @@ public class Response
 		this.message = message;
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Message getResponse()
 	{
 		Random rand = new Random();
-		List[] response = getResponses(message.getEmotions(), rand, message.getMessage());
-		List<String> responseStrings = response[0];
-		List<Emotion> responseEmotions = response[1];
+		List<EmotionalString> response = getResponses(message.getEmotions(), rand, message.getMessage());
+		List<String> responseStrings = new ArrayList<String>();
+		List<Emotion> responseEmotions = new ArrayList<Emotion>();
+		for(int i = 0; i < response.size(); i++)
+		{
+			responseStrings.add(response.get(i).getMessage());
+			responseEmotions.add(response.get(i).getEmotion());
+		}
 		Message finalResponse = getOrganizedResponse(responseStrings, responseEmotions, rand);
 		
 		
@@ -31,19 +35,15 @@ public class Response
 		return finalResponse;
 	}
 	
-	@SuppressWarnings("rawtypes")
-	private List[] getResponses(List<Emotion> emotions, Random rand, String message)
+	private List<EmotionalString> getResponses(List<Emotion> emotions, Random rand, String message)
 	{
-		List<String> responses = new ArrayList<String>();
-		List<Emotion> responseEmote = new ArrayList<Emotion>();
+		List<EmotionalString> responses = new ArrayList<EmotionalString>();
 		for(Emotion emotion: emotions)
 		{
 			EmotionalString response = getResponse(emotion, rand, message);
-			responses.add(response.getMessage());
-			responseEmote.add(response.getEmotion());
+			responses.add(response);
 		}
-		List[] responseArray = {responses, responseEmote};
-		return responseArray;
+		return responses;
 	}
 	
 	private EmotionalString getResponse(Emotion emotion, Random rand, String message)

@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,9 +18,17 @@ public class SpecialDatabase
 	private List<String> specialDatabase;
 	private List<Emotion> specialDatabaseEmotions;
 	
-	private File file = new File(Run.DATABASE_DIRECTORY + "/specialdatabase.txt");
+	private File file = new File(Run.instance.DATABASE_DIRECTORY + "/specialdatabase.txt");
 	
 	public SpecialDatabase()
+	{
+		init();
+		load();
+		checkForInvalid();
+		
+	}
+	
+	public void init()
 	{
 		if(!file.exists())
 		{
@@ -37,8 +46,11 @@ public class SpecialDatabase
 				e.printStackTrace();
 			}
 		}
-		load();
-		if(Run.debug)
+	}
+	
+	public void checkForInvalid()
+	{
+		if(Run.instance.debug)
 		{
 			for(int i = 0; i < specialDatabaseEmotions.size(); i++)
 			{
@@ -46,7 +58,7 @@ public class SpecialDatabase
 				{
 					System.err.println("database entry found with an unknown emotion. delete, replace, ignore");
 					System.err.println(specialDatabase.get(i));
-					String response = Run.scan.nextLine();
+					String response = Run.instance.scan.nextLine();
 					if(response.equals("delete"))
 					{
 						specialDatabase.remove(i);
@@ -56,7 +68,7 @@ public class SpecialDatabase
 					else if(response.equals("replace"))
 					{
 						System.err.println("what do you want to replace it with?");
-						response = Run.scan.nextLine();
+						response = Run.instance.scan.nextLine();
 						for(Emotion emote : Emotion.values())
 						{
 							if(response.toUpperCase().equals(emote.toString()))
@@ -75,7 +87,11 @@ public class SpecialDatabase
 	{
 		try
 		{
-			BufferedReader br = new BufferedReader(new FileReader(file));
+			BufferedReader br;
+			if(Run.instance.connectedToInternet)
+				br = new BufferedReader(new InputStreamReader(Run.instance.specialDatabase));
+			else
+				br = new BufferedReader(new FileReader(file));
 			int size = 0;
 			try
 			{
@@ -93,6 +109,8 @@ public class SpecialDatabase
 				add(line);
 			}
 			br.close();
+			if(Run.instance.connectedToInternet)
+				saveSpecialDatabase();
 		}
 		catch(Exception e)
 		{
