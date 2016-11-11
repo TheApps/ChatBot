@@ -1,0 +1,20 @@
+19 
+hello how are you:GREETING 
+hello how are you:QUESTION 
+hi how are you:GREETING 
+hi how are you:QUESTION 
+hey how are you:GREETING 
+hey how are you:QUESTION 
+what is your name:QUESTION 
+do you hate me:QUESTION 
+do you hate me:SAD 
+i hate you:ANGRY 
+i hate myself:SAD 
+see you later:FAREWELL 
+stop:ANGRY 
+whats up:QUESTION 
+whats up:GREETING 
+whats new:QUESTION 
+whats new:GREETING 
+what is new:QUESTION 
+what is new:GREETING
